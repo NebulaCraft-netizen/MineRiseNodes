@@ -3,67 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status | MineRiseNodes</title>
+    <title>Network Status | MineRiseNodes</title>
+    <link rel="icon" type="image/x-icon" href="assests/Logo.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <style>
-        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .status-bar { height: 40px; width: 6px; border-radius: 4px; background: #22c55e; }
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;700;900&display=swap');
+
+        :root { 
+            --primary: #3b82f6; 
+            --dark: #020617; 
+            --obsidian: #010409;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body { 
+            background-color: var(--dark); 
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+        }
+
+        /* [ UI UTILITIES ] */
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .hero-gradient { background: radial-gradient(circle at top, #1e3a8a 0%, #020617 80%); }
         .text-gradient { background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* [ STATUS INDICATORS ] */
+        .pulse-green {
+            width: 12px; height: 12px; background: var(--success); border-radius: 50%;
+            box-shadow: 0 0 15px var(--success); animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* [ UPTIME GRAPH BARS ] */
+        .uptime-bar { width: 4px; height: 30px; border-radius: 2px; background: var(--success); margin: 0 1px; transition: 0.3s; cursor: pointer; }
+        .uptime-bar:hover { background: #fff; transform: scaleY(1.2); }
+        .uptime-bar.down { background: var(--danger); }
+        .uptime-bar.partial { background: var(--warning); }
+
+        /* [ LIVE CONSOLE TEXT ] */
+        .console-font { font-family: 'Fira Code', monospace; }
+        .scanline {
+            width: 100%; height: 2px; background: rgba(59, 130, 246, 0.1);
+            position: absolute; top: 0; left: 0; animation: scan 4s linear infinite;
+        }
+        @keyframes scan { from { top: 0%; } to { top: 100%; } }
+
+        /* [ MOBILE MENU ] */
+        #mobile-menu { transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); transform: translateX(100%); }
+        #mobile-menu.active { transform: translateX(0); }
     </style>
 </head>
 <body>
 
-    <nav class="sticky top-0 z-50 glass border-b border-white/5 py-6 px-10">
-        <div class="max-w-[1400px] mx-auto flex justify-between items-center">
-            <a href="index.html" class="text-3xl font-black tracking-tighter italic">MINE<span class="text-blue-500">RISE</span></a>
-            <div class="hidden md:flex space-x-12 text-sm font-bold uppercase tracking-[0.3em] text-gray-400">
-                <a href="index.html" class="hover:text-white transition">Home</a>
-                <a href="plans.html" class="hover:text-white transition">Plans</a>
-                <a href="locations.html" class="hover:text-white transition">Locations</a>
-                <a href="status.html" class="text-white border-b-2 border-blue-500 pb-2">Status</a>
+    <nav class="sticky top-0 z-[100] glass border-b border-white/5 py-5 px-6 md:px-12">
+        <div class="max-w-[1500px] mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <img src="assests/Logo.png" class="w-10 h-10 object-contain" alt="Logo">
+                <a href="index.html" class="text-3xl font-black tracking-tighter italic uppercase">MINE<span class="text-blue-500">RISE</span></a>
             </div>
-            <div class="w-32"></div>
+
+            <div class="hidden lg:flex items-center space-x-12 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
+                <a href="index.html" class="hover:text-white transition">Home</a>
+                <a href="locations.html" class="hover:text-white transition">Locations</a>
+                <a href="status.html" class="text-white border-b-2 border-blue-500 pb-1">Status</a>
+                <a href="plans.html" class="hover:text-white transition">Plans</a>
+                <a href="https://discord.gg/7rDCdnk2aq" class="hover:text-white transition">Discord</a>
+            </div>
+
+            <a href="https://panel.minerisenodes.com" class="hidden sm:block bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full text-[10px] font-black tracking-widest transition shadow-lg shadow-blue-900/40">CONSOLE</a>
+            <button id="menu-toggle" class="lg:hidden text-2xl text-white"><i class="fas fa-bars-staggered"></i></button>
         </div>
     </nav>
 
-    <section class="max-w-[1200px] mx-auto pt-32 px-10">
-        <div class="glass p-16 rounded-[60px] border border-green-500/20 mb-16 flex flex-col md:flex-row items-center justify-between text-center md:text-left gap-10">
-            <div class="flex items-center gap-10">
-                <div class="w-8 h-8 bg-green-500 rounded-full shadow-[0_0_30px_rgba(34,197,94,0.6)] animate-pulse"></div>
-                <div>
-                    <h2 class="text-5xl font-black uppercase italic tracking-tighter mb-2">All Nodes <span class="text-gradient">Green</span></h2>
-                    <p class="text-gray-500 text-sm font-bold uppercase tracking-[0.4em]">Infrastructure Monitoring v2.4</p>
-                </div>
-            </div>
-            <div class="text-right">
-                <span class="text-7xl font-black tracking-tighter italic">99.99%</span>
-            </div>
+    <div id="mobile-menu" class="fixed inset-0 bg-slate-950 z-[110] flex flex-col p-10 lg:hidden">
+        <div class="flex justify-between items-center">
+            <span class="text-2xl font-black italic">MINE<span class="text-blue-500">RISE</span></span>
+            <button id="menu-close" class="text-4xl text-white">&times;</button>
         </div>
+        <div class="mt-20 flex flex-col space-y-8 text-5xl font-black uppercase italic tracking-tighter">
+            <a href="index.html">Home</a>
+            <a href="locations.html">Nodes</a>
+            <a href="status.html" class="text-blue-500">Status</a>
+            <a href="plans.html">Pricing</a>
+        </div>
+    </div>
 
-        <div class="space-y-12 mb-40">
-            <div class="glass p-12 rounded-[40px] border border-white/5">
-                <div class="flex justify-between items-end mb-10">
-                    <h3 class="font-black italic text-3xl tracking-tight uppercase">DE-Frankfurt-Cluster</h3>
-                    <span class="text-green-400 font-black text-sm uppercase tracking-widest bg-green-500/10 px-6 py-2 rounded-full border border-green-500/20">Operational</span>
-                </div>
-                <div class="flex gap-2 overflow-hidden justify-between">
-                    <script>for(let i=0; i<80; i++) document.write('<div class="status-bar opacity-' + (i < 78 ? '100' : '40') + '"></div>');</script>
+    <header class="hero-gradient pt-40 pb-20 px-6 text-center">
+        <div data-aos="fade-up">
+            <div class="flex items-center justify-center gap-4 mb-10">
+                <div class="pulse-green"></div>
+                <span class="text-[12px] font-black uppercase tracking-[0.5em] text-green-500">All Systems Operational</span>
+            </div>
+            <h1 class="text-7xl md:text-[140px] font-black leading-[0.8] tracking-tighter uppercase italic">
+                NETWORK <br> <span class="text-gradient">VITALS.</span>
+            </h1>
+            <p class="text-gray-400 max-w-2xl mx-auto mt-12 text-lg md:text-xl font-medium">
+                Live transparency. Every node, every carrier, every millisecond. Monitor our Ryzen 9 infrastructure in real-time.
+            </p>
+        </div>
+    </header>
+
+    <section class="max-w-[1400px] mx-auto px-6 py-20">
+        <div class="grid md:grid-cols-4 gap-6">
+            
+            <div class="glass p-10 rounded-[40px] border-white/5" data-aos="fade-up" data-aos-delay="100">
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 italic">Global Uptime (30d)</p>
+                <h3 class="text-5xl font-black italic text-white">99.99<span class="text-blue-500">%</span></h3>
+                <div class="flex mt-6 h-8 items-end gap-[2px]">
+                    <script>
+                        for(let i=0; i<30; i++) document.write('<div class="uptime-bar"></div>');
+                    </script>
                 </div>
             </div>
 
-            <div class="glass p-12 rounded-[40px] border border-white/5">
-                <div class="flex justify-between items-end mb-10">
-                    <h3 class="font-black italic text-3xl tracking-tight uppercase">SG-Singapore-Cluster</h3>
-                    <span class="text-green-400 font-black text-sm uppercase tracking-widest bg-green-500/10 px-6 py-2 rounded-full border border-green-500/20">Operational</span>
+            <div class="glass p-10 rounded-[40px] border-white/5" data-aos="fade-up" data-aos-delay="200">
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 italic">Avg Network Ping</p>
+                <h3 class="text-5xl font-black italic text-white" id="live-ping">14.2<span class="text-blue-500 ml-1">MS</span></h3>
+                <p class="text-green-500 text-[10px] font-bold mt-4 uppercase tracking-widest italic">+0.2ms Improvement</p>
+            </div>
+
+            <div class="glass p-10 rounded-[40px] border-white/5" data-aos="fade-up" data-aos-delay="300">
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 italic">Traffic Scrubbed</p>
+                <h3 class="text-5xl font-black italic text-white">0.00<span class="text-blue-500 ml-1">TB</span></h3>
+                <p class="text-gray-600 text-[10px] font-bold mt-4 uppercase tracking-widest italic italic">Path.net Mitigation Idle</p>
+            </div>
+
+            <div class="glass p-10 rounded-[40px] border-white/5" data-aos="fade-up" data-aos-delay="400">
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 italic">Avg Node Load</p>
+                <h3 class="text-5xl font-black italic text-white" id="live-load">18<span class="text-blue-500">%</span></h3>
+                <div class="w-full bg-white/5 h-2 rounded-full mt-6 overflow-hidden">
+                    <div class="bg-blue-500 h-full w-[18%] transition-all duration-1000" id="load-bar"></div>
                 </div>
-                <div class="flex gap-2 overflow-hidden justify-between">
-                    <script>for(let i=0; i<80; i++) document.write('<div class="status-bar opacity-100"></div>');</script>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="max-w-[1200px] mx-auto py-20 px-6">
+        <div class="glass rounded-[50px] p-12 md:p-20 border-white/10 shadow-3xl overflow-hidden relative">
+            <div class="scanline"></div>
+            
+            <h2 class="text-4xl font-black italic uppercase tracking-tighter mb-16">SYSTEM <span class="text-blue-500">HIERARCHY.</span></h2>
+
+            <div class="space-y-12">
+                <div class="border-b border-white/5 pb-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div class="flex items-center gap-6">
+                            <i class="fas fa-server text-blue-500 text-2xl"></i>
+                            <div>
+                                <h4 class="text-xl font-black italic uppercase">DE-Frankfurt-01 (Mainframe)</h4>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">AMD Ryzen 9 7950X // 128GB DDR5 ECC</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-12">
+                            <div class="text-right">
+                                <span class="block text-[10px] font-black text-gray-600 uppercase tracking-widest">Uptime</span>
+                                <span class="text-lg font-black italic text-green-500">100%</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-[10px] font-black text-gray-600 uppercase tracking-widest">Network</span>
+                                <span class="text-lg font-black italic text-blue-400">Stable</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-white/5 pb-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div class="flex items-center gap-6">
+                            <i class="fas fa-terminal text-blue-500 text-2xl"></i>
+                            <div>
+                                <h4 class="text-xl font-black italic uppercase">Client Wings (Pterodactyl)</h4>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Global Panel & SFTP Gateway</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-12">
+                            <div class="text-right">
+                                <span class="block text-[10px] font-black text-gray-600 uppercase tracking-widest">Latency</span>
+                                <span class="text-lg font-black italic text-green-500">0.8ms</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-[10px] font-black text-gray-600 uppercase tracking-widest">API Engine</span>
+                                <span class="text-lg font-black italic text-blue-400">Healthy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-white/5 pb-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div class="flex items-center gap-6">
+                            <i class="fas fa-cloud-upload-alt text-blue-500 text-2xl"></i>
+                            <div>
+                                <h4 class="text-xl font-black italic uppercase">Offsite Backup Cluster</h4>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">S3-Compatible Storage Redundancy</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-12">
+                            <div class="text-right">
+                                <span class="block text-[10px] font-black text-gray-600 uppercase tracking-widest">Sync</span>
+                                <span class="text-lg font-black italic text-green-500">Synced</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-[10px] font-black text-gray-600 uppercase tracking-widest">Capacity</span>
+                                <span class="text-lg font-black italic text-blue-400">Unlimited</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <section class="max-w-[1200px] mx-auto py-24 px-6">
+        <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-16 text-center">PAST <span class="text-blue-500">EVENTS.</span></h2>
+        
+        <div class="space-y-8">
+            <div class="glass p-10 rounded-[40px] border-white/5" data-aos="fade-up">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">March 12, 2026</span>
+                        <h4 class="text-2xl font-black italic uppercase mt-2">Planned Frankfurt Node Migration</h4>
+                    </div>
+                    <span class="bg-blue-600/10 text-blue-500 px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">Resolved</span>
+                </div>
+                <div class="console-font text-sm text-gray-400 space-y-4 border-l border-white/10 pl-6">
+                    <p><span class="text-blue-500">14:00 CET:</span> Scheduled maintenance started. All game servers migrated to redundant compute cluster.</p>
+                    <p><span class="text-blue-500">14:45 CET:</span> SSD storage arrays upgraded to Gen4 NVMe.</p>
+                    <p><span class="text-blue-500">15:10 CET:</span> All nodes back online. Zero customer downtime recorded.</p>
+                </div>
+            </div>
+
+            <div class="glass p-10 rounded-[40px] border-white/5" data-aos="fade-up">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">February 28, 2026</span>
+                        <h4 class="text-2xl font-black italic uppercase mt-2">Network Congestion (EU-West)</h4>
+                    </div>
+                    <span class="bg-blue-600/10 text-blue-500 px-4 py-1 rounded text-[10px] font-black uppercase tracking-widest">Resolved</span>
+                </div>
+                <div class="console-font text-sm text-gray-400 space-y-4 border-l border-white/10 pl-6">
+                    <p><span class="text-blue-500">18:22 CET:</span> Monitoring detected packet loss on Tier-1 carrier (Telia).</p>
+                    <p><span class="text-blue-500">18:30 CET:</span> Traffic rerouted through GTT and Deutsche Telekom.</p>
+                    <p><span class="text-blue-500">18:45 CET:</span> Latency stabilized. Path.net filtering adjusted.</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-20">
+                <button class="bg-white/5 hover:bg-white/10 text-white px-12 py-5 rounded-full font-black italic uppercase tracking-widest text-[11px] border border-white/10 transition">Load Historical Archive (2025)</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-[1400px] mx-auto py-40 px-6">
+        <div class="bg-black rounded-[40px] p-8 md:p-16 border-2 border-white/5 relative overflow-hidden shadow-[0_0_100px_rgba(59,130,246,0.1)]">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="flex gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div class="text-[10px] font-black text-gray-700 uppercase tracking-[0.5em]">Global Backbone Console v4.2</div>
+            </div>
+
+            <div class="console-font text-xs md:text-sm text-blue-500/80 space-y-2 mb-10 overflow-hidden h-[300px]" id="terminal-content">
+                <p>> Initializing network probe...</p>
+                <p>> Handshaking with Path.net Scrubbing Center...</p>
+                <p class="text-green-500">> Connection Established: 12.4 Tbps Backbone</p>
+                <p>> Fetching node heartbeat...</p>
+                <p class="text-white">> [DE-1] CPU: 7950X | TEMP: 42°C | FAN: 80%</p>
+                <p class="text-white">> [DE-1] MEM: 128GB DDR5 | SWAP: 0%</p>
+                <p class="text-white">> [DE-1] NET: 10Gbps Uplink | 0% Drop</p>
+                <p>> Monitoring for ingress floods...</p>
+                <p class="text-green-500">> System Nominal.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="pt-40 pb-20 px-10 border-t border-white/5 text-center">
+        <h2 class="text-6xl md:text-[100px] font-black italic uppercase mb-20 tracking-tighter">ALWAYS <span class="text-blue-500">ONLINE.</span></h2>
+        <div class="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-16 text-left mb-32 border-t border-white/5 pt-20">
+            <div>
+                <h5 class="text-white font-black uppercase tracking-widest mb-8">Uptime Stats</h5>
+                <p class="text-gray-500 text-sm leading-relaxed italic font-medium">99.99% Guaranteed uptime through our redundant Anycast network. We don't settle for average.</p>
+            </div>
+            <div>
+                <h5 class="text-white font-black uppercase tracking-widest mb-8">Reporting</h5>
+                <p class="text-gray-500 text-sm leading-relaxed italic font-medium">Notice an issue? Report it instantly on our Discord or open a high-priority support ticket.</p>
+            </div>
+            <div>
+                <h5 class="text-white font-black uppercase tracking-widest mb-8">Resources</h5>
+                <div class="flex flex-col space-y-4 text-[10px] font-black uppercase tracking-widest">
+                    <a href="https://panel.minerisenodes.com" class="text-blue-500 hover:text-white transition">Panel Access</a>
+                    <a href="https://discord.gg/7rDCdnk2aq" class="text-blue-500 hover:text-white transition">Discord Status</a>
+                </div>
+            </div>
+        </div>
+        <p class="text-gray-700 text-[10px] font-black uppercase tracking-[0.8em]">
+            &copy; 2026 MINERISE NETWORK // STATUS ENGINE v2.1
+        </p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, duration: 1200 });
+
+        // MOBILE NAV
+        const menuBtn = document.getElementById('menu-toggle');
+        const closeBtn = document.getElementById('menu-close');
+        const menu = document.getElementById('mobile-menu');
+        menuBtn.onclick = () => menu.classList.add('active');
+        closeBtn.onclick = () => menu.classList.remove('active');
+
+        // [ LIVE DATA SIMULATION ]
+        const pingEl = document.getElementById('live-ping');
+        const loadEl = document.getElementById('live-load');
+        const loadBar = document.getElementById('load-bar');
+
+        setInterval(() => {
+            // Simulate Ping fluctuation
+            const ping = (13 + Math.random() * 2).toFixed(1);
+            pingEl.innerHTML = `${ping}<span class="text-blue-500 ml-1">MS</span>`;
+
+            // Simulate Load fluctuation
+            const load = Math.floor(15 + Math.random() * 8);
+            loadEl.innerHTML = `${load}<span class="text-blue-500 ml-1">%</span>`;
+            loadBar.style.width = `${load}%`;
+        }, 3000);
+    </script>
 </body>
 </html>
