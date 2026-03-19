@@ -3,76 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plans | MineRiseNodes</title>
+    <title>Enterprise Plans | MineRiseNodes</title>
+    <link rel="icon" type="image/x-icon" href="assests/Logo.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <style>
-        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;700;900&display=swap');
+
+        :root { 
+            --primary: #3b82f6; 
+            --dark: #020617; 
+            --accent: #a78bfa; 
+            --obsidian: #010409;
+            --success: #22c55e;
+        }
+
+        body { 
+            background-color: var(--dark); 
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+        }
+
+        /* [UTILITY CLASSES] */
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .hero-gradient { background: radial-gradient(circle at top, #1e3a8a 0%, #020617 70%); }
         .text-gradient { background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .plan-card:hover { border-color: #3b82f6; transform: translateY(-8px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        /* [ANIMATED BACKGROUND] */
+        .bg-mesh {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(167, 139, 250, 0.05) 0px, transparent 50%);
+        }
+
+        /* [CUSTOM RANGE SLIDER] */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #1e293b; border-radius: 10px; }
+        input[type=range]::-webkit-slider-thumb { 
+            height: 28px; width: 28px; border-radius: 50%; background: var(--primary); 
+            cursor: pointer; -webkit-appearance: none; margin-top: -11px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); border: 3px solid #fff;
+            transition: transform 0.2s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        /* [PRICING CARDS] */
+        .plan-card { transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); }
+        .plan-card:hover { transform: translateY(-20px); border-color: var(--primary); background: rgba(59, 130, 246, 0.03); }
+        
+        .feature-check { color: var(--success); filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.4)); }
+
+        /* [GLOW EFFECTS] */
+        .glow-hover:hover { box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.3); }
+
+        /* [TABLE STYLING] */
+        .tech-table tr { border-bottom: 1px solid rgba(255, 255, 255, 0.03); transition: 0.3s; }
+        .tech-table tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+        /* [MOBILE MENU] */
+        #mobile-menu { transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); transform: translateX(100%); }
+        #mobile-menu.active { transform: translateX(0); }
     </style>
 </head>
 <body>
+    <div class="bg-mesh"></div>
 
-    <nav class="sticky top-0 z-50 glass border-b border-white/5 py-4">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-black tracking-tighter italic">MINE<span class="text-blue-500">RISE</span></a>
-            <div class="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-widest text-gray-400">
+    <nav class="sticky top-0 z-[100] glass border-b border-white/5 py-5 px-6 md:px-12">
+        <div class="max-w-[1500px] mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <img src="assests/Logo.png" class="w-10 h-10 object-contain" alt="Logo">
+                <a href="index.html" class="text-3xl font-black tracking-tighter italic uppercase">MINE<span class="text-blue-500">RISE</span></a>
+            </div>
+
+            <div class="hidden lg:flex items-center space-x-12 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
                 <a href="index.html" class="hover:text-white transition">Home</a>
-                <a href="plans.html" class="text-white border-b-2 border-blue-500 pb-1">Plans</a>
                 <a href="locations.html" class="hover:text-white transition">Locations</a>
                 <a href="status.html" class="hover:text-white transition">Status</a>
+                <a href="plans.html" class="text-white border-b-2 border-blue-500 pb-1">Plans</a>
+                <a href="https://discord.gg/7rDCdnk2aq" class="hover:text-white transition">Discord</a>
             </div>
-            <button class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-full text-sm font-bold transition shadow-lg shadow-blue-900/20">DASHBOARD</button>
+
+            <div class="flex items-center gap-4">
+                <a href="https://panel.minerisenodes.com" class="hidden sm:flex items-center bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full text-[10px] font-black tracking-widest transition glow-blue transform hover:scale-105">
+                    <i class="fas fa-terminal mr-2"></i> CONSOLE
+                </a>
+                <button id="menu-toggle" class="lg:hidden text-2xl text-white"><i class="fas fa-bars-staggered"></i></button>
+            </div>
         </div>
     </nav>
 
-    <section class="pt-24 pb-16 px-6 text-center">
-        <h1 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-6">Choose Your <span class="text-gradient">Power</span></h1>
-        <p class="text-gray-500 max-w-2xl mx-auto text-lg font-medium">Enterprise hardware, zero overselling. All plans include Ryzen 9 7950X performance.</p>
+    <div id="mobile-menu" class="fixed inset-0 bg-slate-950 z-[110] flex flex-col p-10 lg:hidden">
+        <div class="flex justify-between items-center">
+            <span class="text-2xl font-black italic uppercase tracking-tighter">MINE<span class="text-blue-500">RISE</span></span>
+            <button id="menu-close" class="text-4xl text-white">&times;</button>
+        </div>
+        <div class="mt-20 flex flex-col space-y-8 text-5xl font-black uppercase italic tracking-tighter">
+            <a href="index.html" class="hover:text-blue-500">Home</a>
+            <a href="locations.html" class="hover:text-blue-500">Nodes</a>
+            <a href="plans.html" class="text-blue-500">Pricing</a>
+            <a href="https://discord.gg/7rDCdnk2aq" class="hover:text-blue-500">Support</a>
+        </div>
+    </div>
+
+    <header class="hero-gradient relative pt-40 pb-32 px-6 text-center overflow-hidden">
+        <div class="relative z-10" data-aos="fade-up">
+            <span class="inline-block bg-blue-500/10 text-blue-400 border border-blue-500/20 px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-[0.6em] mb-12">
+                Predictable Pricing // Unpredictable Speed
+            </span>
+            <h1 class="text-7xl md:text-[160px] font-black leading-[0.8] tracking-tighter uppercase italic">
+                SELECT YOUR <br> <span class="text-gradient">THROTTLE.</span>
+            </h1>
+            <p class="text-gray-400 max-w-3xl mx-auto mt-16 text-xl md:text-3xl font-medium leading-relaxed">
+                We don't do "tiers." We do power. Scale your memory, cores, and storage in real-time on our Ryzen 9 7950X clusters.
+            </p>
+        </div>
+    </header>
+
+    <section class="max-w-[1300px] mx-auto px-6 py-24 relative z-20">
+        <div class="glass rounded-[60px] border-white/10 p-12 md:p-24 shadow-3xl" data-aos="zoom-in">
+            <div class="grid lg:grid-cols-2 gap-24">
+                
+                <div class="space-y-16">
+                    <h2 class="text-5xl font-black italic uppercase tracking-tighter">BUILD YOUR <br> <span class="text-blue-500">MACHINE.</span></h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-end">
+                            <label class="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Memory Allocation (DDR5)</label>
+                            <span class="text-4xl font-black italic text-white"><span id="ram-display">8</span><span class="text-blue-500 ml-1">GB</span></span>
+                        </div>
+                        <input type="range" id="ram-input" min="4" max="128" step="4" value="8" class="w-full">
+                        <div class="flex justify-between text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                            <span>4GB Start</span>
+                            <span>128GB Enterprise Cap</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-end">
+                            <label class="text-xs font-black uppercase tracking-[0.3em] text-gray-500">Dedicated Threads (7950X)</label>
+                            <span class="text-4xl font-black italic text-white"><span id="cpu-display">2</span><span class="text-blue-500 ml-1">vCores</span></span>
+                        </div>
+                        <input type="range" id="cpu-input" min="1" max="16" step="1" value="2" class="w-full">
+                        <div class="flex justify-between text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                            <span>1 Core</span>
+                            <span>16 Dedicated Threads</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass p-6 rounded-3xl border-white/5 flex items-center justify-between">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Gen4 NVMe</span>
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="glass p-6 rounded-3xl border-white/5 flex items-center justify-between">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">DDoS Shield</span>
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-600/5 rounded-[40px] border border-blue-500/20 p-12 flex flex-col justify-between text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-10 opacity-5"><i class="fas fa-microchip text-[15rem]"></i></div>
+                    
+                    <div class="relative z-10">
+                        <p class="text-gray-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4">Total Monthly Commitment</p>
+                        <div class="text-[100px] md:text-[140px] font-black italic leading-none tracking-tighter">
+                            $<span id="price-display">9.50</span>
+                        </div>
+                        <p class="text-blue-400 font-bold italic mt-4">Billed monthly. Cancel anytime.</p>
+                    </div>
+
+                    <div class="relative z-10 space-y-6 mt-12">
+                        <ul class="text-left space-y-4 mb-10">
+                            <li class="flex items-center gap-4 text-sm font-bold text-gray-300">
+                                <i class="fas fa-check feature-check"></i> Instant Deployment (Under 60s)
+                            </li>
+                            <li class="flex items-center gap-4 text-sm font-bold text-gray-300">
+                                <i class="fas fa-check feature-check"></i> Pterodactyl Control Panel
+                            </li>
+                            <li class="flex items-center gap-4 text-sm font-bold text-gray-300">
+                                <i class="fas fa-check feature-check"></i> Unlimited Player Slots
+                            </li>
+                            <li class="flex items-center gap-4 text-sm font-bold text-gray-300">
+                                <i class="fas fa-check feature-check"></i> SFTP & Database Access
+                            </li>
+                        </ul>
+                        <button class="w-full bg-white text-black py-8 rounded-[30px] font-black text-2xl uppercase italic hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105 shadow-2xl">
+                            CONFIRM DEPLOYMENT
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section class="max-w-7xl mx-auto py-12 px-6 grid md:grid-cols-3 gap-10 mb-24">
+    <section class="max-w-[1400px] mx-auto py-40 px-10">
+        <div class="text-center mb-32">
+            <h2 class="text-6xl md:text-9xl font-black italic uppercase tracking-tighter" data-aos="fade-up">TECHNICAL <br> <span class="text-blue-500">OVERRIDE.</span></h2>
+            <p class="text-gray-500 mt-8 text-xl font-bold uppercase tracking-widest">Why our Ryzen 9 nodes outperform standard "Xeon" hosting.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-12">
+            <div class="glass p-12 rounded-[50px] border-white/5 plan-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center mb-10 border border-blue-500/20">
+                    <i class="fas fa-bolt text-2xl text-blue-500"></i>
+                </div>
+                <h3 class="text-3xl font-black italic uppercase mb-6 tracking-tighter">ZEN 4 ARCH</h3>
+                <p class="text-gray-500 leading-relaxed font-medium text-lg">
+                    The Ryzen 9 7950X features the 5nm Zen 4 architecture, offering up to 13% IPC uplift over the previous generation. This translates to zero-lag chunk loading.
+                </p>
+                <div class="mt-10 pt-10 border-t border-white/5 space-y-4">
+                    <div class="flex justify-between text-xs font-black uppercase tracking-widest">
+                        <span class="text-gray-600">Max Turbo</span>
+                        <span class="text-blue-400">5.7 GHz</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-black uppercase tracking-widest">
+                        <span class="text-gray-600">L3 Cache</span>
+                        <span class="text-blue-400">64 MB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-12 rounded-[50px] border-white/5 plan-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 bg-purple-600/10 rounded-2xl flex items-center justify-center mb-10 border border-purple-500/20">
+                    <i class="fas fa-memory text-2xl text-purple-500"></i>
+                </div>
+                <h3 class="text-3xl font-black italic uppercase mb-6 tracking-tighter">DDR5 FABRIC</h3>
+                <p class="text-gray-500 leading-relaxed font-medium text-lg">
+                    Standard DDR4 is dead. Our nodes utilize 5200MHz DDR5 ECC-Ready memory. This provides massive bandwidth for high-player-count SMP servers.
+                </p>
+                <div class="mt-10 pt-10 border-t border-white/5 space-y-4">
+                    <div class="flex justify-between text-xs font-black uppercase tracking-widest">
+                        <span class="text-gray-600">Bandwidth</span>
+                        <span class="text-purple-400">51.2 GB/s</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-black uppercase tracking-widest">
+                        <span class="text-gray-600">Latency</span>
+                        <span class="text-purple-400">Ultra-Low CAS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-12 rounded-[50px] border-white/5 plan-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-16 h-16 bg-green-600/10 rounded-2xl flex items-center justify-center mb-10 border border-green-500/20">
+                    <i class="fas fa-microchip text-2xl text-green-500"></i>
+                </div>
+                <h3 class="text-3xl font-black italic uppercase mb-6 tracking-tighter">PATH MITIGATION</h3>
+                <p class="text-gray-500 leading-relaxed font-medium text-lg">
+                    Every plan includes Path.net Anycast DDoS mitigation. With a 12Tbps backbone, even the largest botnets won't tickle your server's latency.
+                </p>
+                <div class="mt-10 pt-10 border-t border-white/5 space-y-4">
+                    <div class="flex justify-between text-xs font-black uppercase tracking-widest">
+                        <span class="text-gray-600">Filter Capacity</span>
+                        <span class="text-green-400">12.0 Tbps</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-black uppercase tracking-widest">
+                        <span class="text-gray-600">Edge PoPs</span>
+                        <span class="text-green-400">40+ Global</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-[1200px] mx-auto py-40 px-6 overflow-hidden">
+        <div class="flex flex-col md:flex-row gap-20 items-center">
+            <div class="md:w-1/2" data-aos="fade-right">
+                <h2 class="text-6xl font-black italic uppercase tracking-tighter leading-none mb-10">THE <br> <span class="text-blue-500">GAP.</span></h2>
+                <p class="text-gray-400 text-xl font-medium leading-relaxed mb-12">
+                    Most hosts use old Intel Xeon or EPYC processors with slow clock speeds. MineRise exclusively uses flagship Ryzen 9 chips to guarantee high single-thread performance.
+                </p>
+                <div class="space-y-6">
+                    <div class="bg-white/5 p-6 rounded-3xl border-l-4 border-blue-500">
+                        <p class="text-white font-black italic uppercase tracking-widest text-sm">MineRise Single-Thread Score</p>
+                        <div class="w-full bg-white/10 h-3 rounded-full mt-3 overflow-hidden">
+                            <div class="bg-blue-500 h-full w-[95%]"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-3xl border-l-4 border-gray-700">
+                        <p class="text-gray-500 font-black italic uppercase tracking-widest text-sm">Competitor Xeon Platinum</p>
+                        <div class="w-full bg-white/10 h-3 rounded-full mt-3 overflow-hidden">
+                            <div class="bg-gray-700 h-full w-[45%]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:w-1/2 relative" data-aos="fade-left">
+                <div class="glass rounded-[40px] p-8 border-white/5 overflow-x-auto">
+                    <table class="w-full text-left tech-table">
+                        <thead>
+                            <tr class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500 border-b border-white/10">
+                                <th class="pb-6 px-4">Feature</th>
+                                <th class="pb-6 px-4">MineRise</th>
+                                <th class="pb-6 px-4 text-gray-700">Them</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-xs font-bold uppercase tracking-widest">
+                            <tr>
+                                <td class="py-6 px-4 text-gray-400 italic">Storage Type</td>
+                                <td class="py-6 px-4 text-white font-black">NVMe Gen4</td>
+                                <td class="py-6 px-4 text-gray-700">SATA SSD</td>
+                            </tr>
+                            <tr>
+                                <td class="py-6 px-4 text-gray-400 italic">CPU Model</td>
+                                <td class="py-6 px-4 text-white font-black">R9 7950X</td>
+                                <td class="py-6 px-4 text-gray-700">Xeon E5</td>
+                            </tr>
+                            <tr>
+                                <td class="py-6 px-4 text-gray-400 italic">RAM Tech</td>
+                                <td class="py-6 px-4 text-white font-black">DDR5 5.2GHz</td>
+                                <td class="py-6 px-4 text-gray-700">DDR4 2.4GHz</td>
+                            </tr>
+                            <tr>
+                                <td class="py-6 px-4 text-gray-400 italic">Overselling</td>
+                                <td class="py-6 px-4 text-green-500 font-black italic text-sm">STRICT ZERO</td>
+                                <td class="py-6 px-4 text-red-900">MASSIVE</td>
+                            </tr>
+                            <tr>
+                                <td class="py-6 px-4 text-gray-400 italic">Control Panel</td>
+                                <td class="py-6 px-4 text-white font-black italic">ULTRA-CUSTOM</td>
+                                <td class="py-6 px-4 text-gray-700 italic text-[10px]">STOCK THEME</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-[1000px] mx-auto py-40 px-6">
+        <h2 class="text-5xl font-black italic uppercase tracking-tighter mb-24 text-center">COMMON <span class="text-blue-500">QUERIES.</span></h2>
         
-        <div class="glass plan-card p-10 rounded-[32px] border border-white/5">
-            <h3 class="text-2xl font-black italic tracking-tight">IRON TIER</h3>
-            <p class="text-5xl font-black tracking-tighter mt-4 mb-8">$4.00<span class="text-gray-500 text-sm ml-2">/MO</span></p>
-            <ul class="space-y-5 mb-12 text-gray-300 font-medium">
-                <li><i class="fas fa-microchip text-blue-500 mr-3"></i> 4GB DDR5 RAM</li>
-                <li><i class="fas fa-bolt text-blue-500 mr-3"></i> 2 vCores</li>
-                <li><i class="fas fa-hard-drive text-blue-500 mr-3"></i> 40GB NVMe SSD</li>
-            </ul>
-            <button class="w-full py-5 rounded-2xl bg-white/5 border border-white/10 font-black hover:bg-white hover:text-black transition-all">SELECT PLAN</button>
-        </div>
+        <div class="space-y-6">
+            <div class="glass p-8 rounded-[30px] border-white/5 hover:border-blue-500/30 transition-all cursor-pointer group">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-black italic uppercase tracking-widest text-white">How long does deployment take?</h4>
+                    <i class="fas fa-plus text-blue-500 group-hover:rotate-45 transition"></i>
+                </div>
+                <p class="text-gray-500 font-medium leading-relaxed">Our automated provisioning system usually completes the setup in under 45 seconds. Once the payment is verified, you'll receive your console credentials instantly.</p>
+            </div>
 
-        <div class="glass plan-card p-10 rounded-[32px] border-blue-500/50 scale-105 shadow-[0_0_50px_-12px_rgba(59,130,246,0.3)] bg-slate-900/60">
-            <h3 class="text-2xl font-black italic tracking-tight text-blue-400">DIAMOND TIER</h3>
-            <p class="text-5xl font-black tracking-tighter mt-4 mb-8">$12.00<span class="text-gray-500 text-sm ml-2">/MO</span></p>
-            <ul class="space-y-5 mb-12 text-gray-300 font-medium">
-                <li><i class="fas fa-microchip text-blue-400 mr-3"></i> 12GB DDR5 RAM</li>
-                <li><i class="fas fa-bolt text-blue-400 mr-3"></i> 4 vCores</li>
-                <li><i class="fas fa-globe text-blue-400 mr-3"></i> Dedicated IP</li>
-            </ul>
-            <button class="w-full py-5 rounded-2xl bg-blue-600 font-black hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/40">SELECT PLAN</button>
-        </div>
+            <div class="glass p-8 rounded-[30px] border-white/5 hover:border-blue-500/30 transition-all cursor-pointer group">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-black italic uppercase tracking-widest text-white">Do you allow custom JAR files?</h4>
+                    <i class="fas fa-plus text-blue-500 group-hover:rotate-45 transition"></i>
+                </div>
+                <p class="text-gray-500 font-medium leading-relaxed">Yes. Through our custom panel, you can upload any JAR (Paper, Spigot, Forge, Fabric, BungeeCord, Velocity) and set it as the boot target.</p>
+            </div>
 
-        <div class="glass plan-card p-10 rounded-[32px] border border-white/5">
-            <h3 class="text-2xl font-black italic tracking-tight">NETHERITE TIER</h3>
-            <p class="text-5xl font-black tracking-tighter mt-4 mb-8">$24.00<span class="text-gray-500 text-sm ml-2">/MO</span></p>
-            <ul class="space-y-5 mb-12 text-gray-300 font-medium">
-                <li><i class="fas fa-microchip text-blue-500 mr-3"></i> 32GB DDR5 RAM</li>
-                <li><i class="fas fa-bolt text-blue-500 mr-3"></i> 8 vCores</li>
-                <li><i class="fas fa-shield-halved text-blue-500 mr-3"></i> Advanced Filtering</li>
-            </ul>
-            <button class="w-full py-5 rounded-2xl bg-white/5 border border-white/10 font-black hover:bg-white hover:text-black transition-all">SELECT PLAN</button>
-        </div>
+            <div class="glass p-8 rounded-[30px] border-white/5 hover:border-blue-500/30 transition-all cursor-pointer group">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-black italic uppercase tracking-widest text-white">Is there a player limit?</h4>
+                    <i class="fas fa-plus text-blue-500 group-hover:rotate-45 transition"></i>
+                </div>
+                <p class="text-gray-500 font-medium leading-relaxed">We provide unlimited slots. We believe you should define your limits by your hardware allocation, not by artificial restrictions.</p>
+            </div>
 
+            <div class="glass p-8 rounded-[30px] border-white/5 hover:border-blue-500/30 transition-all cursor-pointer group">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-black italic uppercase tracking-widest text-white">What is your refund policy?</h4>
+                    <i class="fas fa-plus text-blue-500 group-hover:rotate-45 transition"></i>
+                </div>
+                <p class="text-gray-500 font-medium leading-relaxed">We offer a 48-hour no-questions-asked refund policy for your first server, provided no TOS violations have occurred.</p>
+            </div>
+        </div>
     </section>
 
-    <footer class="py-12 text-center border-t border-white/5 text-gray-600 text-[10px] tracking-[0.4em] uppercase">
-        MineRiseNodes &copy; 2026 // Obsidian Grade Infrastructure
+    <footer class="pt-40 pb-20 px-10 border-t border-white/5 text-center">
+        <h2 class="text-6xl md:text-[120px] font-black italic uppercase mb-20 tracking-tighter" data-aos="zoom-out">READY TO <span class="text-blue-500 text-gradient">RISE?</span></h2>
+        
+        <div class="grid md:grid-cols-4 gap-12 text-left max-w-[1200px] mx-auto mb-32 border-t border-white/5 pt-20">
+            <div class="col-span-1">
+                <h5 class="text-white font-black uppercase tracking-widest mb-8">Navigation</h5>
+                <div class="flex flex-col space-y-4 text-gray-500 text-[10px] font-black uppercase tracking-widest">
+                    <a href="index.html" class="hover:text-blue-500 transition">Dashboard</a>
+                    <a href="locations.html" class="hover:text-blue-500 transition">Infrastructure</a>
+                    <a href="status.html" class="hover:text-blue-500 transition">Network Map</a>
+                </div>
+            </div>
+            <div class="col-span-1">
+                <h5 class="text-white font-black uppercase tracking-widest mb-8">Resources</h5>
+                <div class="flex flex-col space-y-4 text-gray-500 text-[10px] font-black uppercase tracking-widest">
+                    <a href="https://panel.minerisenodes.com" class="hover:text-blue-500 transition">Client Panel</a>
+                    <a href="https://discord.gg/7rDCdnk2aq" class="hover:text-blue-500 transition">Discord Support</a>
+                    <a href="#" class="hover:text-blue-500 transition">TOS & Privacy</a>
+                </div>
+            </div>
+            <div class="col-span-1 md:col-span-2">
+                <h5 class="text-white font-black uppercase tracking-widest mb-8 italic text-2xl tracking-tighter">MINERISE NETWORK</h5>
+                <p class="text-gray-500 text-sm leading-relaxed font-medium italic max-w-sm">
+                    High-end Minecraft hosting powered by Ryzen 9 technology. Built for professionals, by professionals.
+                </p>
+                <div class="flex gap-6 mt-8">
+                    <a href="https://discord.gg/7rDCdnk2aq" target="_blank" class="text-gray-400 hover:text-white text-2xl transition"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white text-2xl transition"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <p class="text-gray-700 text-[10px] font-black uppercase tracking-[0.8em] mt-20">
+            &copy; 2026 MINERISE NETWORK // POWERED BY ENDERFORGE STUDIO
+        </p>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, duration: 1200 });
+
+        // MOBILE NAV LOGIC
+        const menuBtn = document.getElementById('menu-toggle');
+        const closeBtn = document.getElementById('menu-close');
+        const menu = document.getElementById('mobile-menu');
+        menuBtn.onclick = () => menu.classList.add('active');
+        closeBtn.onclick = () => menu.classList.remove('active');
+
+        // [ PRICING ENGINE ]
+        const ramIn = document.getElementById('ram-input');
+        const cpuIn = document.getElementById('cpu-input');
+        const ramDis = document.getElementById('ram-display');
+        const cpuDis = document.getElementById('cpu-display');
+        const priceDis = document.getElementById('price-display');
+
+        function updatePrice() {
+            const ramVal = parseInt(ramIn.value);
+            const cpuVal = parseInt(cpuIn.value);
+            
+            // MATH: $1.00 per GB + $0.75 per CPU Core
+            const total = (ramVal * 1.00) + (cpuVal * 0.75);
+            
+            ramDis.innerText = ramVal;
+            cpuDis.innerText = cpuVal;
+            priceDis.innerText = total.toFixed(2);
+        }
+
+        ramIn.oninput = updatePrice;
+        cpuIn.oninput = updatePrice;
+        updatePrice(); // Init
+    </script>
 </body>
 </html>
