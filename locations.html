@@ -3,98 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Locations | MineRiseNodes</title>
+    <title>Global Infrastructure | MineRiseNodes</title>
+    <link rel="icon" type="image/x-icon" href="assests/Logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .text-gradient { background: linear-gradient(90deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .node-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .node-card:hover { border-color: #3b82f6; transform: scale(1.02); background: rgba(30, 41, 59, 0.6); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        :root { --primary: #3b82f6; --dark: #020617; }
+        body { background-color: var(--dark); color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .hero-gradient { background: radial-gradient(circle at top, #1e40af 0%, #020617 80%); }
+        .text-gradient { background: linear-gradient(90deg, #60a5fa, #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .node-card { transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); border-left: 4px solid transparent; }
+        .node-card:hover { transform: translateY(-10px); border-left-color: var(--primary); background: rgba(59, 130, 246, 0.05); }
+        .ping-point { position: absolute; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 20px var(--primary); }
+        .ping-wave { position: absolute; width: 12px; height: 12px; border: 2px solid var(--primary); border-radius: 50%; animation: ripple 2s infinite; }
+        @keyframes ripple { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(4); opacity: 0; } }
     </style>
 </head>
 <body>
-
-    <nav class="sticky top-0 z-50 glass border-b border-white/5 py-6">
-        <div class="max-w-[1400px] mx-auto px-10 flex justify-between items-center">
-            <a href="index.html" class="text-3xl font-black tracking-tighter italic">MINE<span class="text-blue-500">RISE</span></a>
-            <div class="hidden md:flex space-x-12 text-sm font-bold uppercase tracking-[0.3em] text-gray-400">
-                <a href="index.html" class="hover:text-white transition">Home</a>
-                <a href="plans.html" class="hover:text-white transition">Plans</a>
-                <a href="locations.html" class="text-white border-b-2 border-blue-500 pb-2">Locations</a>
-                <a href="status.html" class="hover:text-white transition">Status</a>
+    <nav class="sticky top-0 z-[100] glass border-b border-white/5 py-5 px-12">
+        <div class="max-w-[1500px] mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <img src="assests/Logo.png" class="w-10 h-10" alt="Logo">
+                <a href="index.html" class="text-3xl font-black italic uppercase tracking-tighter">MINE<span class="text-blue-500">RISE</span></a>
             </div>
-            <div class="w-32"></div> </div>
+            <div class="hidden lg:flex space-x-12 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">
+                <a href="index.html">Home</a>
+                <a href="locations.html" class="text-white border-b-2 border-blue-500 pb-1">Locations</a>
+                <a href="status.html">Status</a>
+                <a href="plans.html">Plans</a>
+            </div>
+            <a href="https://panel.minerisenodes.com" class="bg-blue-600 text-white px-8 py-3 rounded-full text-[10px] font-black tracking-widest hover:bg-blue-500 transition">CONSOLE</a>
+        </div>
     </nav>
 
-    <header class="pt-32 pb-20 px-10 text-center">
-        <h1 class="text-6xl md:text-9xl font-black uppercase italic tracking-tighter mb-8">Global <span class="text-gradient">Reach</span></h1>
-        <p class="text-gray-500 max-w-4xl mx-auto text-xl font-medium">Test your connection to our high-performance Ryzen 9 clusters in real-time.</p>
+    <header class="hero-gradient pt-40 pb-32 px-6 text-center">
+        <div data-aos="fade-up">
+            <h1 class="text-7xl md:text-[120px] font-black tracking-tighter uppercase italic leading-none">ELITE <br> <span class="text-gradient">LOCATIONS.</span></h1>
+            <p class="text-gray-400 max-w-2xl mx-auto mt-12 text-xl font-medium">Strategic Ryzen 9 7950X deployments in Europe and Asia for global dominance.</p>
+        </div>
     </header>
 
-    <section class="max-w-[1400px] mx-auto py-12 px-10 grid md:grid-cols-2 gap-12 mb-24">
-        
-        <div class="glass node-card p-12 rounded-[50px] border border-white/5 relative overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-                <div class="text-center md:text-left">
-                    <img src="https://flagcdn.com/de.svg" class="w-20 mb-6 rounded shadow-2xl" alt="Germany">
-                    <h3 class="text-4xl font-black italic tracking-tight">FRANKFURT</h3>
-                    <p class="text-blue-500 font-black text-sm uppercase tracking-widest mt-2">Central Europe Node</p>
+    <section class="max-w-[1400px] mx-auto py-20 px-10 grid lg:grid-cols-2 gap-12">
+        <div class="glass p-16 rounded-[50px] node-card" data-aos="fade-right">
+            <div class="flex justify-between items-start mb-12">
+                <div>
+                    <h2 class="text-5xl font-black italic uppercase">FRANKFURT</h2>
+                    <p class="text-blue-500 font-black uppercase tracking-widest text-xs mt-2">Germany // Central Europe</p>
                 </div>
-                <div class="bg-black/40 p-8 rounded-[30px] border border-white/5 min-w-[200px] text-center">
-                    <p class="text-[10px] text-gray-500 font-black uppercase mb-2">Your Latency</p>
-                    <p id="ping-de" class="text-5xl font-black text-green-400">--ms</p>
+                <i class="fas fa-microchip text-4xl text-white/10"></i>
+            </div>
+            <div class="space-y-6">
+                <div class="flex justify-between border-b border-white/5 pb-4">
+                    <span class="text-gray-500 font-bold uppercase text-[10px]">Backbone</span>
+                    <span class="text-white font-black italic">10Gbps Path.net</span>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-4">
+                    <span class="text-gray-500 font-bold uppercase text-[10px]">Compute</span>
+                    <span class="text-white font-black italic">Ryzen 9 7950X</span>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-4">
+                    <span class="text-gray-500 font-bold uppercase text-[10px]">Memory</span>
+                    <span class="text-white font-black italic">DDR5 5200MHz</span>
                 </div>
             </div>
-            <div class="mt-10 grid grid-cols-2 gap-4">
-                <div class="bg-white/5 p-4 rounded-2xl text-center"><p class="text-[10px] text-gray-500 font-bold uppercase">Uplink</p><p class="font-black">10Gbps</p></div>
-                <div class="bg-white/5 p-4 rounded-2xl text-center"><p class="text-[10px] text-gray-500 font-bold uppercase">CPU</p><p class="font-black">7950X</p></div>
-            </div>
+            <button class="w-full mt-12 bg-white text-black py-5 rounded-2xl font-black italic uppercase hover:bg-blue-600 hover:text-white transition">Deploy to EU</button>
         </div>
 
-        <div class="glass node-card p-12 rounded-[50px] border border-white/5 relative overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-                <div class="text-center md:text-left">
-                    <img src="https://flagcdn.com/sg.svg" class="w-20 mb-6 rounded shadow-2xl" alt="Singapore">
-                    <h3 class="text-4xl font-black italic tracking-tight">SINGAPORE</h3>
-                    <p class="text-blue-500 font-black text-sm uppercase tracking-widest mt-2">Asia-Pacific Node</p>
+        <div class="glass p-16 rounded-[50px] node-card" data-aos="fade-left">
+            <div class="flex justify-between items-start mb-12">
+                <div>
+                    <h2 class="text-5xl font-black italic uppercase">SINGAPORE</h2>
+                    <p class="text-blue-500 font-black uppercase tracking-widest text-xs mt-2">South East Asia // APAC</p>
                 </div>
-                <div class="bg-black/40 p-8 rounded-[30px] border border-white/5 min-w-[200px] text-center">
-                    <p class="text-[10px] text-gray-500 font-black uppercase mb-2">Your Latency</p>
-                    <p id="ping-sg" class="text-5xl font-black text-green-400">--ms</p>
+                <i class="fas fa-globe-asia text-4xl text-white/10"></i>
+            </div>
+            <div class="space-y-6">
+                <div class="flex justify-between border-b border-white/5 pb-4">
+                    <span class="text-gray-500 font-bold uppercase text-[10px]">Backbone</span>
+                    <span class="text-white font-black italic">Equinix SG2 Interconnect</span>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-4">
+                    <span class="text-gray-500 font-bold uppercase text-[10px]">Compute</span>
+                    <span class="text-white font-black italic">Ryzen 9 7950X</span>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-4">
+                    <span class="text-gray-500 font-bold uppercase text-[10px]">Memory</span>
+                    <span class="text-white font-black italic">DDR5 5200MHz</span>
                 </div>
             </div>
-            <div class="mt-10 grid grid-cols-2 gap-4">
-                <div class="bg-white/5 p-4 rounded-2xl text-center"><p class="text-[10px] text-gray-500 font-bold uppercase">Uplink</p><p class="font-black">10Gbps</p></div>
-                <div class="bg-white/5 p-4 rounded-2xl text-center"><p class="text-[10px] text-gray-500 font-bold uppercase">CPU</p><p class="font-black">7950X</p></div>
-            </div>
+            <button class="w-full mt-12 bg-white text-black py-5 rounded-2xl font-black italic uppercase hover:bg-blue-600 hover:text-white transition">Deploy to ASIA</button>
         </div>
-
     </section>
 
-    <script>
-        // Simple Ping Simulation (Replace URL with your actual server IP/Files for real results)
-        function measurePing(elementId, testUrl) {
-            const start = Date.now();
-            fetch(testUrl, { mode: 'no-cors', cache: 'no-cache' })
-            .then(() => {
-                const delta = Date.now() - start;
-                document.getElementById(elementId).innerText = delta + "ms";
-            })
-            .catch(() => {
-                // If it fails (due to no-cors/offline), we still get a rough timing from the catch block
-                const delta = Date.now() - start;
-                document.getElementById(elementId).innerText = delta + "ms";
-            });
-        }
-        
-        // You would use actual server addresses here
-        setInterval(() => {
-            measurePing('ping-de', 'https://de-frankfurt.example.com/ping');
-            measurePing('ping-sg', 'https://sg-singapore.example.com/ping');
-        }, 3000);
-    </script>
+    <footer class="py-20 text-center border-t border-white/5">
+        <p class="text-gray-700 text-[10px] font-black uppercase tracking-[0.8em] italic">© 2026 MINERISE NETWORK</p>
+    </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 1200 });</script>
 </body>
 </html>
